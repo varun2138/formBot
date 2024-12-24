@@ -33,6 +33,9 @@ const HomePage = () => {
   const [folderName, setFolderName] = useState("");
   const [userPermission, setUserPermission] = useState("edit");
 
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [foldertoDelete, setFolderToDelete] = useState(null);
+
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
   const openFolder = () => setFolderOpen(true);
@@ -101,9 +104,7 @@ const HomePage = () => {
   };
 
   const handleSharedUserClick = (sharedId) => {
-    console.log(sharedId);
     if (sharedId === user?.id) {
-      console.log(sharedId);
       setSelectedSharedFolders([]);
 
       setCurrentWorkspace(user?.username);
@@ -112,14 +113,20 @@ const HomePage = () => {
       const selectedUser = sharedDashboards.find(
         (dashboard) => dashboard.id === sharedId
       );
-      console.log("selected", selectedUser);
+
       setSelectedSharedFolders(selectedUser?.folders || []);
       setCurrentWorkspace(selectedUser?.name);
-      // setCurrentWorkspaceId(selectedUser?.id);
       setUserPermission(selectedUser?.permissions);
     }
     setIsDropdownOpen(false);
   };
+  useEffect(() => {
+    console.log("Current Workspace:", currentWorkspace);
+    console.log("User Permission:", userPermission);
+    if (currentWorkspace && userPermission) {
+      handleFolders();
+    }
+  }, [currentWorkspace, userPermission]);
 
   const handleSharedDashboard = async () => {
     try {
@@ -152,23 +159,43 @@ const HomePage = () => {
 
     try {
       const response = await createFolder({ dashboardId, folderName });
-      if (response.folder) {
-        setFolderName("");
-        handleFolders();
-        closeFolder();
+      setFolders([...folders, response.folder]);
+
+      if (selectedSharedFolders.length > 0) {
+        setSelectedSharedFolders([...selectedSharedFolders, response.folder]);
       }
+      setFolderName("");
+      closeFolder();
+      // handleFolders();
     } catch (error) {
       console.error("Error creating folder", error);
     }
   };
-  const handleDeleteFolder = async (folderId) => {
-    if (userPermission !== "edit") return;
+  const handleDeleteFolder = async () => {
+    if (userPermission !== "edit" || !foldertoDelete) return;
     try {
-      await deleteFolder(folderId);
+      setFolders(folders.filter((folder) => folder._id !== foldertoDelete));
+      if (selectedSharedFolders.length > 0) {
+        setSelectedSharedFolders(
+          selectedSharedFolders.filter((folder) => folder._id != foldertoDelete)
+        );
+      }
+      await deleteFolder(foldertoDelete);
+      closeDeleteFolder();
       handleFolders();
     } catch (error) {
       console.error("Error deleting folder", error);
+      closeDeleteFolder();
     }
+  };
+
+  const handlefolderDelete = (folderId) => {
+    setFolderToDelete(folderId);
+    setDeleteModal(true);
+  };
+  const closeDeleteFolder = () => {
+    setDeleteModal(false);
+    setFolderToDelete(null);
   };
   return (
     <div className={styles.homepage}>
@@ -179,6 +206,7 @@ const HomePage = () => {
           user={user}
           sharedDashboards={sharedDashboards}
           handleSharedUserClick={handleSharedUserClick}
+          currentWorkspace={currentWorkspace}
         />
         <button onClick={openModal} className={styles.shareBtn}>
           share
@@ -227,11 +255,32 @@ const HomePage = () => {
           </div>
         )}
 
+        {deleteModal && (
+          <div className={styles.folderModal}>
+            <div className={styles.openFolder}>
+              <h1>Are you sure want to delete this form</h1>
+
+              <div className={styles.buttons}>
+                <button
+                  onClick={handleDeleteFolder}
+                  className={styles.createBtn}
+                >
+                  Confirm
+                </button>
+                <p>|</p>
+                <button onClick={closeDeleteFolder} className={styles.cancel}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <FolderList
           folders={folders}
           selectedSharedFolders={selectedSharedFolders}
-          onDeleteFolder={handleDeleteFolder}
+          // onDeleteFolder={handleDeleteFolder}
           userPermission={userPermission}
+          deleteFolder={handlefolderDelete}
         />
       </div>
     </div>

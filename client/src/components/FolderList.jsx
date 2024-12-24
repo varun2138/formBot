@@ -5,8 +5,9 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 const FolderList = ({
   selectedSharedFolders,
   folders,
-  onDeleteFolder,
+
   userPermission,
+  deleteFolder,
 }) => {
   const folderItems =
     selectedSharedFolders.length > 0 ? selectedSharedFolders : folders;
@@ -17,7 +18,10 @@ const FolderList = ({
           <h2>{folder.folderName}</h2>
           {userPermission === "edit" && (
             <RiDeleteBin6Line
-              onClick={() => onDeleteFolder(folder._id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteFolder(folder._id);
+              }}
               className={styles.delete}
             />
           )}

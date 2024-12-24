@@ -9,6 +9,7 @@ const Dropdown = ({
   user,
   sharedDashboards,
   handleSharedUserClick,
+  currentWorkspace,
 }) => {
   return (
     <div className={styles.dropdown}>
@@ -19,7 +20,7 @@ const Dropdown = ({
         }`}
       >
         <Link to="/dashboard" className={styles.dropdownItem}>
-          {user.username}'s Workspace
+          {currentWorkspace ? currentWorkspace : user?.username}'s Workspace
           {isDropdownOpen ? (
             <MdKeyboardArrowDown className={styles.icon} />
           ) : (

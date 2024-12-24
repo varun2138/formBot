@@ -70,26 +70,61 @@ const createFolder = asyncHandler(async (req, res) => {
 const deleteFolder = asyncHandler(async (req, res) => {
   const { folderId } = req.params;
   const userId = req.user._id;
+
+  console.log("Deleting folder, logged-in userId:", userId);
+  console.log("Folder ID to delete:", folderId);
+
+  // Fetch the folder from the database
   const folder = await Folder.findById(folderId);
+  console.log("folder", folder);
   if (!folder) {
+    console.log("Folder not found.");
     throw new ApiError(404, "folder not found");
   }
-  if (folder.creator.toString() === userId) {
+
+  console.log("Folder creator ID:", folder.creator.toString());
+
+  // If the logged-in user is the creator of the folder, allow deletion
+  if (folder.creator.equals(userId)) {
+    console.log("User is the creator of the folder, proceeding to delete.");
     await folder.deleteOne();
     return res.status(200).json({
       message: "folder deleted successfully",
     });
   }
-  const user = await User.findById(userId);
-  const sharedWorkspace = user.sharedDashboards.find(
-    (shared) => shared.dashboardId.toString() == folder.creator.toString()
+
+  console.log(
+    "User is not the creator. Checking shared workspace permissions."
   );
-  if (!sharedWorkspace || !sharedWorkspace.permissions.includes("edit")) {
+
+  // If the user is not the creator, check if they have "edit" permissions in the shared workspace
+  const user = await User.findById(userId);
+  console.log("User's shared dashboards:", user.sharedDashboards);
+
+  const sharedWorkspace = user.sharedDashboards.find((shared) =>
+    shared.dashboardId.equals(folder.creator)
+  );
+
+  if (!sharedWorkspace) {
+    console.log("No shared workspace found for this folder.");
     throw new ApiError(
       403,
       "You do not have permission to delete a folder in this workspace"
     );
   }
+
+  console.log("Found shared workspace:", sharedWorkspace);
+
+  // Check if the user has "edit" permissions
+  if (!sharedWorkspace.permissions.includes("edit")) {
+    console.log("User does not have edit permissions in the shared workspace.");
+    throw new ApiError(
+      403,
+      "You do not have permission to delete a folder in this workspace"
+    );
+  }
+
+  console.log("User has 'edit' permissions, proceeding to delete folder.");
   await folder.deleteOne();
   res.status(200).json({
     message: "folder deleted successfully",
