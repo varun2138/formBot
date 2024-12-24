@@ -1,0 +1,84 @@
+.formContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.4rem;
+  width: 20rem;
+  flex-direction: column;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.4rem;
+  flex-direction: column;
+}
+.inputContainer {
+  display: flex;
+  justify-content: start;
+
+  gap: 0.5rem;
+  flex-direction: column;
+}
+.label {
+  font-weight: 500;
+}
+.input {
+  width: 20rem;
+  padding: 0.6rem 1.3rem;
+  background: transparent;
+  box-shadow: 0px 4px 10px 0px #00000040;
+  outline: none;
+  border: 1px solid #ffffff80;
+  border-radius: 0.5rem;
+  color: #fff;
+}
+.input::placeholder {
+  color: #636364;
+  font-weight: 300;
+}
+
+.submitBtn,
+.GoogleBtn {
+  background: #1a5fff;
+  box-shadow: 0px 4px 10px 0px #e9444b40;
+  width: 20rem;
+  text-align: center;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  color: #fff;
+  font-size: 1rem;
+}
+.text {
+  text-transform: uppercase;
+}
+
+.GoogleBtn {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+.icon {
+  position: absolute;
+  left: 2rem;
+  background-color: #fff;
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: 100%;
+}
+.link {
+  color: #1a5fff;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  opacity: 0.6;
+}
+.errorLabel {
+  color: red;
+}

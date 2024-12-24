@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.formContainer {
+  background: #000;
+  width: 100%;
+  height: 100vh;
+  color: white;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.formTypes {
+  margin-top: 4rem;
+}
+
+.image1,
+.image2,
+.image3 {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.image1 {
+  position: absolute;
+  width: 10rem;
+  height: 10rem;
+  bottom: 0;
+  right: 20rem;
+}
+.image2 {
+  position: absolute;
+  width: 10rem;
+  height: 10rem;
+  right: 0;
+  top: 8rem;
+}
+
+.image3 {
+  position: absolute;
+  width: 10rem;
+  height: 10rem;
+  left: 2rem;
+  bottom: 12rem;
+}
