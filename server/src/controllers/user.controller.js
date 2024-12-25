@@ -60,14 +60,15 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const logout = asyncHandler(async (req, res) => {
+  console.log("logout hit api");
   return res
-    .status(200)
     .clearCookie("token", {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "None" : "Lax",
     })
-    .json("user logged out successfully");
+    .status(200)
+    .json({ status: true, message: "user logged out successfully" });
 });
 
 const updateUser = asyncHandler(async (req, res) => {

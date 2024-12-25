@@ -1,8 +1,16 @@
+/* Default Light Mode */
+
 .homepage {
   width: 100%;
   height: 100vh;
-  background: #181818;
+  background: #18181b;
   color: white;
+  font-family: "Open Sans", serif;
+}
+
+[data-theme="light"] .homepage {
+  background: white;
+  color: black;
 }
 .navbar {
   padding: 1rem;
@@ -20,35 +28,47 @@
 
 .dropdownButton {
   width: 100%;
-
-  background: #181818;
-  border-radius: 0.25rem 0.25rem 0 0rem;
+  background: #18181b;
+  border-radius: 0.5rem 0.5rem 0 0rem;
   border: 1px solid #3d3d3f;
   height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: 0px 0px 20px 6px rgba(17, 17, 26, 0.08);
 }
 
 .dropdownButton.open {
   background-color: #1d1d1d !important;
 }
+
+[data-theme="light"] .dropdownMenu {
+  background: white;
+  border-bottom: 1px solid gray;
+}
+
 .dropdownMenu {
-  position: absolute; /* Position it absolutely to avoid affecting the button */
-  top: 100%; /* Position the dropdown below the button */
+  position: absolute;
+  top: 100%;
   left: 0;
   width: 100%;
   background: #1d1d1d;
   display: flex;
   flex-direction: column;
   border: 1px solid #3d3d3f;
-
-  border-radius: 0 0 0.25rem 0.25rem;
-  padding: 0.5rem 0; /* Add some padding for spacing inside the menu */
-  z-index: 1000; /* Ensure the dropdown menu appears above other elements */
+  border-radius: 0 0 0.5rem 0.5rem;
+  padding: 0.5rem 0;
+  z-index: 1000;
+  box-shadow: 0px 0px 20px 6px rgba(17, 17, 26, 0.08);
 }
 
+[data-theme="light"] .dropdownItem,
+[data-theme="light"] .settings,
+[data-theme="light"] .logout {
+  color: black;
+  background: rgb(255, 253, 253);
+}
 .dropdownItem,
 .settings,
 .logout {
@@ -62,15 +82,26 @@
   border-bottom: 1px solid #3d3d3f;
   width: 100%;
   text-align: start;
-  /* font-size: 0.9rem; */
   display: flex;
   align-items: center;
   gap: 1rem;
   font-weight: 600;
 }
+.settings {
+  font-size: 0.9rem;
+}
+
+[data-theme="light"] .logout {
+  color: #fd8915;
+}
 .logout {
   color: #ffa54c;
   border-bottom: none;
+}
+.theme {
+  position: absolute;
+  right: 14rem;
+  top: 1.5rem;
 }
 .shareBtn {
   position: absolute;
@@ -109,6 +140,10 @@
   justify-content: center;
   align-items: center;
 }
+[data-theme="light"] .shareSection {
+  background: white;
+  border: gray;
+}
 .shareSection {
   border: 1px solid #3d3d3f;
   width: 36rem;
@@ -118,7 +153,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  background-color: #181818;
+  background-color: #18181b;
 }
 
 .Options {
@@ -132,12 +167,20 @@
   font-weight: 600;
 }
 .select {
-  background: #181818;
+  background: #18181b;
   color: white;
   border: none;
   width: 6rem;
   outline: none;
   border-radius: none;
+}
+[data-theme="light"] .select {
+  background: white;
+  color: black;
+  font-weight: 600;
+}
+[data-theme="light"] .select .option {
+  background: white;
 }
 .select option {
   background: #1f1f23;
@@ -149,6 +192,11 @@
 .select option:checked {
   background-color: #1f1f23;
   color: white;
+}
+[data-theme="light"] .input {
+  background: white;
+  border: 1px solid gray;
+  color: black;
 }
 .input {
   padding: 0.8rem 1rem;
@@ -180,19 +228,6 @@
   align-items: center;
   gap: 1rem;
 }
-.createFolder {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background: #3d3d3f;
-  border-radius: 0.25rem;
-  color: white;
-  font-weight: 600;
-  border: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
 
 .openFolder {
   position: absolute;
@@ -208,21 +243,37 @@
   gap: 1rem;
   justify-content: start;
   color: white;
-  background: #181818;
+  background: #18181b;
   box-shadow: 0px 0px 3.8px 0px #ffffff40;
+  z-index: 9;
 }
-.openFolder h1 {
+[data-theme="light"] .openFolder,
+[data-theme="light"] .folderName {
+  background: white;
+  color: black;
+  border: 1px solid gray;
+  box-shadow: 0px 0px 3.8px 0px #ffffff40;
+  font-weight: 500;
+}
+.openFolder p {
   font-size: 1.5rem;
 }
+.openFolder .heading {
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+
 .folderName {
   padding: 1.2rem;
   border-radius: 0.5rem;
   border: none;
   outline: none;
-
   background: #1f1f23;
   color: white;
+  font-size: 1rem;
 }
+
 .folderName::placeholder {
   color: #3d3d3f;
   font-weight: 600;
@@ -243,9 +294,12 @@
   border: none;
   background: transparent;
   font-size: 1.4rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #4b83ff;
   cursor: pointer;
+}
+[data-theme="light"] .cancel {
+  color: black;
 }
 .cancel {
   color: white;

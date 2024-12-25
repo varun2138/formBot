@@ -5,6 +5,7 @@
   gap: 1.4rem;
   width: 20rem;
   flex-direction: column;
+  font-family: "Poppins", serif;
 }
 
 .form {
@@ -17,7 +18,7 @@
 .inputContainer {
   display: flex;
   justify-content: start;
-
+  font-family: "Poppins", serif;
   gap: 0.5rem;
   flex-direction: column;
 }
@@ -37,6 +38,7 @@
 .input::placeholder {
   color: #636364;
   font-weight: 300;
+  font-family: "Poppins", serif;
 }
 
 .submitBtn,
@@ -51,9 +53,12 @@
   padding: 0.6rem 1.2rem;
   color: #fff;
   font-size: 1rem;
+  font-family: "Poppins", serif;
+  cursor: pointer;
 }
 .text {
   text-transform: uppercase;
+  font-family: "Poppins", serif;
 }
 
 .GoogleBtn {
@@ -73,8 +78,11 @@
   color: #1a5fff;
   font-weight: 400;
   cursor: pointer;
+  font-family: "Inter", serif;
 }
-
+.register {
+  font-family: "Inter", serif;
+}
 .error {
   color: red;
   opacity: 0.6;

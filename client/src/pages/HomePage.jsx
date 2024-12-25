@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./styles/homepage.module.css";
 
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   acceptDashboard,
@@ -11,10 +11,11 @@ import {
   getSharedDashboard,
   shareDashboard,
 } from "../services/folderService";
-import { MdOutlineCreateNewFolder } from "react-icons/md";
+
 import Dropdown from "../components/Dropdown";
 import ShareModal from "../components/ShareModal";
 import FolderList from "../components/FolderList";
+import ThemeToggle from "../components/ThemeToggle";
 
 const HomePage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -25,9 +26,8 @@ const HomePage = () => {
   const [permissions, setPermissions] = useState("view");
   const [shareLink, setShareLink] = useState("");
   const [isProcessingToken, setIsProcessingToken] = useState(false);
-  const { user } = useAuth();
+  const { user, theme } = useAuth();
   const [currentWorkspace, setCurrentWorkspace] = useState(user?.username);
-
   const [isOpen, setIsOpen] = useState(false);
   const [folderOpen, setFolderOpen] = useState(false);
   const [folderName, setFolderName] = useState("");
@@ -35,13 +35,13 @@ const HomePage = () => {
 
   const [deleteModal, setDeleteModal] = useState(false);
   const [foldertoDelete, setFolderToDelete] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
   const openFolder = () => setFolderOpen(true);
   const closeFolder = () => setFolderOpen(false);
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -120,9 +120,8 @@ const HomePage = () => {
     }
     setIsDropdownOpen(false);
   };
+
   useEffect(() => {
-    console.log("Current Workspace:", currentWorkspace);
-    console.log("User Permission:", userPermission);
     if (currentWorkspace && userPermission) {
       handleFolders();
     }
@@ -166,7 +165,6 @@ const HomePage = () => {
       }
       setFolderName("");
       closeFolder();
-      // handleFolders();
     } catch (error) {
       console.error("Error creating folder", error);
     }
@@ -198,7 +196,7 @@ const HomePage = () => {
     setFolderToDelete(null);
   };
   return (
-    <div className={styles.homepage}>
+    <div className={`${styles.homepage} ${theme}`}>
       <nav className={styles.navbar}>
         <Dropdown
           isDropdownOpen={isDropdownOpen}
@@ -208,6 +206,9 @@ const HomePage = () => {
           handleSharedUserClick={handleSharedUserClick}
           currentWorkspace={currentWorkspace}
         />
+        <div className={styles.theme}>
+          <ThemeToggle />
+        </div>
         <button onClick={openModal} className={styles.shareBtn}>
           share
         </button>
@@ -224,14 +225,10 @@ const HomePage = () => {
       />
 
       <div className={styles.folders}>
-        <button onClick={openFolder} className={styles.createFolder}>
-          <MdOutlineCreateNewFolder size={20} /> Create a folder
-        </button>
-
         {folderOpen && (
           <div className={styles.folderModal}>
             <div className={styles.openFolder}>
-              <h1>Create New Folder</h1>
+              <p>Create New Folder</p>
               <input
                 type="text"
                 className={styles.folderName}
@@ -258,7 +255,9 @@ const HomePage = () => {
         {deleteModal && (
           <div className={styles.folderModal}>
             <div className={styles.openFolder}>
-              <h1>Are you sure want to delete this form</h1>
+              <p className={styles.heading}>
+                Are you sure you want to delete this folder?
+              </p>
 
               <div className={styles.buttons}>
                 <button
@@ -278,9 +277,9 @@ const HomePage = () => {
         <FolderList
           folders={folders}
           selectedSharedFolders={selectedSharedFolders}
-          // onDeleteFolder={handleDeleteFolder}
           userPermission={userPermission}
           deleteFolder={handlefolderDelete}
+          openFolder={openFolder}
         />
       </div>
     </div>

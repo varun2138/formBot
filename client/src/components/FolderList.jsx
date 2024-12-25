@@ -2,10 +2,12 @@ import React from "react";
 import styles from "./styles/folderlist.module.css";
 
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdOutlineCreateNewFolder } from "react-icons/md";
+
 const FolderList = ({
   selectedSharedFolders,
   folders,
-
+  openFolder,
   userPermission,
   deleteFolder,
 }) => {
@@ -13,20 +15,29 @@ const FolderList = ({
     selectedSharedFolders.length > 0 ? selectedSharedFolders : folders;
   return (
     <div className={styles.folders}>
-      {folderItems.map((folder) => (
-        <div className={styles.folder} key={folder._id}>
-          <h2>{folder.folderName}</h2>
-          {userPermission === "edit" && (
-            <RiDeleteBin6Line
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteFolder(folder._id);
-              }}
-              className={styles.delete}
-            />
-          )}
-        </div>
-      ))}
+      {userPermission === "edit" && (
+        <button onClick={openFolder} className={styles.createFolder}>
+          <MdOutlineCreateNewFolder size={20} /> Create a folder
+        </button>
+      )}
+      {folderItems.length === 0 ? (
+        <p className={styles.noFolders}>No folders created yet.</p>
+      ) : (
+        folderItems.map((folder) => (
+          <div className={styles.folder} key={folder._id}>
+            <p>{folder.folderName}</p>
+            {userPermission === "edit" && (
+              <RiDeleteBin6Line
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteFolder(folder._id);
+                }}
+                className={styles.delete}
+              />
+            )}
+          </div>
+        ))
+      )}
     </div>
   );
 };

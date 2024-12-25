@@ -40,7 +40,7 @@ const updateUser = async (userData) => {
     });
     return response.data;
   } catch (error) {
-    console.log("login error", error);
+    console.log("update error", error);
     toast.error(error?.response?.data?.message);
     throw error.response ? error.response.data : error.message;
   }
@@ -48,12 +48,17 @@ const updateUser = async (userData) => {
 
 const logout = async () => {
   try {
-    const response = await axios.post(`${BACKEND_URL}/users/logout`, {
-      withCredentials: true,
-    });
+    const response = await axios.post(
+      `${BACKEND_URL}/users/logout`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("logged out succesfully");
     return response.data;
   } catch (error) {
-    console.log("login error", error);
+    console.log("logout error", error);
     toast.error(error?.response?.data?.message);
     throw error.response ? error.response.data : error.message;
   }

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import styles from "../pages/styles/homepage.module.css";
+import useLogout from "../utils/logout";
 
 const Dropdown = ({
   isDropdownOpen,
@@ -11,6 +12,7 @@ const Dropdown = ({
   handleSharedUserClick,
   currentWorkspace,
 }) => {
+  const handleLogout = useLogout();
   return (
     <div className={styles.dropdown}>
       <button
@@ -50,7 +52,9 @@ const Dropdown = ({
           <Link to="/settings" className={styles.settings}>
             Settings
           </Link>
-          <button className={styles.logout}>Log Out</button>
+          <button onClick={handleLogout} className={styles.logout}>
+            Log Out
+          </button>
         </div>
       )}
     </div>
