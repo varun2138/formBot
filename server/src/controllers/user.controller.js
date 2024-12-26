@@ -120,7 +120,6 @@ const updateUser = asyncHandler(async (req, res) => {
 const shareDashboard = asyncHandler(async (req, res) => {
   const { recipientEmail, permissions } = req.body;
 
-  // Validate input
   if (!permissions) {
     throw new ApiError(400, "permissions are required");
   }
@@ -141,7 +140,7 @@ const shareDashboard = asyncHandler(async (req, res) => {
       throw new ApiError(404, "Recipient user not found");
     }
 
-    // Check if the workspace already exists in the recipient's sharedWorkspaces
+    // Checking if the workspace already exists in the recipient's sharedWorkspaces
     const isAlreadyShared = recipient.sharedDashboards.some(
       (shared) => shared.dashboardId.toString() === currentUser._id.toString()
     );

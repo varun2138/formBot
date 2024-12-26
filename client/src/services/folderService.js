@@ -89,8 +89,6 @@ const acceptDashboard = async (data) => {
     console.log("dashboard accepted", response.data);
     return response.data;
   } catch (error) {
-    // toast.error(error?.response?.data?.message);
-
     console.log("error accepting dashboard", error);
   }
 };

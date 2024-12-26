@@ -13,17 +13,15 @@ export const authProtect = asyncHandler(async (req, res, next) => {
 
   try {
     const decodedToken = jwt.verify(token, process.env.SECRET_TOKEN);
-    // console.log("decode token", decodedToken);
 
     const user = await User.findById(decodedToken._id).select("-password");
-    // console.log("user decoded", user);
 
     if (!user) {
-      throw new ApiError(401, "user not found. Invalid token");
+      throw new ApiError(401, "user not found ! Invalid token");
     }
 
     req.user = user;
-    // console.log(req.user);
+
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {

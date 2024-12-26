@@ -26,7 +26,6 @@ import folderRouter from "./routes/folder.route.js";
 // routes declaration
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/folders", folderRouter);
-
 app.use("/api/v1/forms", formRouter);
 
 export default app;
