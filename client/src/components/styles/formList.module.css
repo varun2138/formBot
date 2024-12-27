@@ -1,4 +1,4 @@
-.folders {
+.forms {
   display: flex;
   gap: 0.8rem;
   flex-wrap: wrap;
@@ -12,20 +12,26 @@
   color: black;
   box-shadow: 0px 0px 20px 6px rgba(17, 17, 26, 0.08);
 }
-.createFolder {
-  width: 14rem;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background: #252525;
-  border-radius: 0.25rem;
+.createForm,
+.form {
+  background: #1a5fff;
   color: white;
-  font-weight: 600;
+  width: 12rem;
+  height: 13rem;
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
+  flex-direction: column;
+  gap: 2rem;
   border: none;
-  flex-shrink: 0;
+  font-size: 1.1rem;
+  font-family: "Open sans";
+  border-radius: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+}
+.icon {
+  font-size: 2rem;
 }
 .noFolders {
   position: absolute;
@@ -34,25 +40,18 @@
   font-size: 2rem;
   z-index: 0;
 }
-.folder {
-  padding: 0.4rem 1rem;
+.form {
+  padding: 0 0.5rem;
   font-size: 1rem;
-  background: #252525;
-  border-radius: 0.25rem;
-  color: whitesmoke;
-  font-weight: 600;
-  border: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
+  background: #313030;
 }
-.folder.active {
-  background: white;
-  color: black;
+.form p {
+  position: absolute;
 }
 
 .delete {
-  font-size: 1.2rem;
+  margin-top: -13rem;
+  margin-right: -11rem;
+  font-size: 1.6rem;
   color: red;
 }

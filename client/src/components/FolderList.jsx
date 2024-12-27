@@ -10,6 +10,8 @@ const FolderList = ({
   openFolder,
   userPermission,
   deleteFolder,
+  handleFolderClick,
+  activeFolderId,
 }) => {
   const folderItems =
     selectedSharedFolders.length > 0 ? selectedSharedFolders : folders;
@@ -24,7 +26,15 @@ const FolderList = ({
         <p className={styles.noFolders}>No folders created yet.</p>
       ) : (
         folderItems.map((folder) => (
-          <div className={styles.folder} key={folder._id}>
+          <div
+            className={`${styles.folder} ${
+              activeFolderId === folder._id ? styles.active : ""
+            }`}
+            key={folder._id}
+            onClick={() => {
+              handleFolderClick(folder);
+            }}
+          >
             <p>{folder.folderName}</p>
             {userPermission === "edit" && (
               <RiDeleteBin6Line

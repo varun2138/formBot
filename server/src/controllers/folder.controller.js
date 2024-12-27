@@ -7,7 +7,7 @@ const getFolders = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const folders = await Folder.find({
     creator: userId,
-  });
+  }).populate("forms");
 
   if (!folders) {
     throw new ApiError(404, "no folders found");
@@ -110,4 +110,16 @@ const deleteFolder = asyncHandler(async (req, res) => {
   });
 });
 
-export { createFolder, getFolders, deleteFolder };
+const getFolder = asyncHandler(async (req, res) => {
+  const { folderId } = req.params;
+  console.log(folderId);
+  const folder = await Folder.findById(folderId).populate("forms");
+  if (!folder) {
+    throw new ApiError(404, "Folder not found");
+  }
+  return res.status(200).json({
+    message: "Folder retrieved successfully",
+    folder,
+  });
+});
+export { createFolder, getFolders, deleteFolder, getFolder };

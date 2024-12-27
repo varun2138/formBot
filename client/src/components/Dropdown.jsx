@@ -35,7 +35,9 @@ const Dropdown = ({
         <div className={styles.dropdownMenu}>
           <button
             className={styles.dropdownItem}
-            onClick={() => handleSharedUserClick(user?._id)}
+            onClick={() => {
+              handleSharedUserClick(user?._id);
+            }}
           >
             {user.username}'s Workspace
           </button>

@@ -148,7 +148,9 @@ const shareDashboard = asyncHandler(async (req, res) => {
       throw new ApiError(400, "dashboard is already shared with this user");
     }
 
-    const sharedFolders = await Folder.find({ creator: currentUser._id });
+    const sharedFolders = await Folder.find({
+      creator: currentUser._id,
+    }).populate("forms");
     const standaloneForms = await Form.find({
       creator: currentUser._id,
       parentFolder: null,
@@ -270,7 +272,7 @@ const getSharedDashboard = asyncHandler(async (req, res) => {
       user.sharedDashboards.map(async (dashboard) => {
         const sharedFolders = await Folder.find({
           creator: dashboard.dashboardId._id,
-        });
+        }).populate("forms");
         const sharedForms = await Form.find({
           creator: dashboard.dashboardId._id,
           parentFolder: null,

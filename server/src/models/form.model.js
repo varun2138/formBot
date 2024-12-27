@@ -13,7 +13,14 @@ const formSchema = new mongoose.Schema(
       {
         type: { type: String, enum: ["bubble", "input"] },
         text: { type: String },
-        inputType: { type: String, enum: ["text", "button"], default: "text" },
+        image: {
+          type: String,
+        },
+        inputType: {
+          type: String,
+          enum: ["text", "email", "number", "rating", "date", "button"],
+          default: "text",
+        },
         placeholder: { type: String },
       },
     ],
@@ -26,6 +33,19 @@ const formSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    viewCount: {
+      type: Number,
+      default: 0,
+    },
+    startCount: {
+      type: Number,
+      default: 0,
+    },
+    submitCount: {
+      type: Number,
+      default: 0,
+    },
+    formLink: { type: String },
   },
   { timestamps: true }
 );

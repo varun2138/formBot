@@ -30,6 +30,20 @@ const getFolders = async () => {
     console.log(error);
   }
 };
+
+const getFolderById = async (folderId) => {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/folders/${folderId}`, {
+      withCredentials: true,
+    });
+
+    return response.data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message);
+    console.log(error);
+  }
+};
+
 const deleteFolder = async (folderId) => {
   try {
     const response = await axios.delete(`${BACKEND_URL}/folders/${folderId}`, {
@@ -100,4 +114,5 @@ export {
   createFolder,
   acceptDashboard,
   deleteFolder,
+  getFolderById,
 };
