@@ -11,9 +11,10 @@ import {
 const formRouter = Router();
 
 formRouter.route("/create").post(authProtect, createForm);
-formRouter.route("/update").put(authProtect, addFields);
+formRouter.route("/form/:formId/fields").put(authProtect, addFields);
 formRouter.route("/").get(authProtect, getForms);
-formRouter.route("/:formId").get(authProtect, getForm);
+formRouter.route("/:formId").get(getForm);
+formRouter.route("/protected/:formId").get(authProtect, getForm);
 formRouter.route("/:formId").delete(authProtect, deleteForm);
 
 export default formRouter;

@@ -1,4 +1,3 @@
-// Modal.js
 import React from "react";
 import { IoIosClose } from "react-icons/io";
 import styles from "../pages/styles/homepage.module.css";

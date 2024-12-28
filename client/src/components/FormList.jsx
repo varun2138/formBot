@@ -3,6 +3,8 @@ import styles from "./styles/formList.module.css";
 import { FaPlus } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-hot-toast";
 const FormList = ({
   forms,
   selectedFolder,
@@ -12,6 +14,7 @@ const FormList = ({
   userPermission,
   handleFormDeleteClick,
 }) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleDeleteClick = (e, formId) => {
@@ -35,8 +38,13 @@ const FormList = ({
         displayForms.map((form) => (
           <div
             onClick={() => {
-              navigate(`/forms/form/${form._id}`);
-              console.log("navigated");
+              if (user._id === form.creator) {
+                navigate(`/forms/form/${form._id}`, {
+                  state: { formName: form?.formName },
+                });
+              } else {
+                toast.error("Not allowed for form creation");
+              }
             }}
             className={styles.form}
             key={form._id}

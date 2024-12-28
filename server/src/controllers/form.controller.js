@@ -68,9 +68,16 @@ const createForm = asyncHandler(async (req, res) => {
 });
 
 const addFields = asyncHandler(async (req, res) => {
-  const { formId, fields } = req.body;
+  const { formId } = req.params;
+  const { fields } = req.body;
   if (!fields || !Array.isArray(fields) || fields.length === 0) {
     throw new ApiError(400, "Form must have at least one field");
+  }
+  const lastField = fields[fields.length - 1];
+  if (lastField.type !== "input" || lastField.inputType !== "button") {
+    return res.status(400).json({
+      message: "Submit button must be at the end of the form",
+    });
   }
   const isButtonInMiddle = fields.some(
     (field, index) =>
@@ -93,7 +100,9 @@ const addFields = asyncHandler(async (req, res) => {
   if (hasExistingButton) {
     throw new ApiError(400, "Submit button already exists in the form");
   }
+
   form.fields = [...form.fields, ...fields];
+
   const formLink = form.formLink;
   await form.save();
   res.status(200).json({
@@ -120,6 +129,9 @@ const getForms = asyncHandler(async (req, res) => {
 
 const getForm = asyncHandler(async (req, res) => {
   const { formId } = req.params;
+
+  console.log("get form called");
+  console.log(formId);
   const form = await Form.findById(formId);
   if (!form) {
     throw new ApiError(404, "No form found");

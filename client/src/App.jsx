@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { useAuth } from "./context/AuthContext";
 import SettingsPage from "./pages/SettingsPage";
 import FormCreatePage from "./pages/FormCreatePage";
+import PublicForm from "./pages/PublicForm";
 
 const App = () => {
   const { user } = useAuth();
@@ -55,6 +56,7 @@ const App = () => {
             path="/forms/form/:id"
             element={user ? <FormCreatePage /> : <Navigate to="/" />}
           />
+          <Route path="/forms/:id" element={<PublicForm />} />
         </Routes>
       </BrowserRouter>
       <Toaster />

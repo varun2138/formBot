@@ -11,6 +11,7 @@ const Dropdown = ({
   sharedDashboards,
   handleSharedUserClick,
   currentWorkspace,
+  setUserPermission,
 }) => {
   const handleLogout = useLogout();
   return (
@@ -37,6 +38,7 @@ const Dropdown = ({
             className={styles.dropdownItem}
             onClick={() => {
               handleSharedUserClick(user?._id);
+              setUserPermission("edit");
             }}
           >
             {user.username}'s Workspace

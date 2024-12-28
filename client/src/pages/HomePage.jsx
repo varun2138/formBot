@@ -18,6 +18,7 @@ import FolderList from "../components/FolderList";
 import ThemeToggle from "../components/ThemeToggle";
 import FormList from "../components/FormList";
 import { createForm, deleteForm, getForms } from "../services/formService";
+import toast from "react-hot-toast";
 
 const HomePage = () => {
   // console.log("home page");
@@ -123,7 +124,7 @@ const HomePage = () => {
   const handleForms = async () => {
     try {
       const data = await getForms();
-      // console.log(data?.forms);
+
       setForms(data?.forms);
     } catch (error) {
       console.error("error while fetching forms", error);
@@ -139,8 +140,7 @@ const HomePage = () => {
       const selectedUser = sharedDashboards.find(
         (dashboard) => dashboard.id === sharedId
       );
-      // console.log("selectedUser", selectedUser);
-      // console.log("selected user forms", selectedUser?.forms);
+
       setSelectedSharedFolders(selectedUser?.folders || []);
       setSelectedSharedForms(selectedUser?.forms);
       setCurrentWorkspace(selectedUser?.name);
@@ -166,11 +166,11 @@ const HomePage = () => {
       if (response.sharableLink) {
         setShareLink(response.sharableLink);
         navigator.clipboard.writeText(response.sharableLink);
-        alert("link copied");
+        toast.success("link copied to clipboard");
       } else {
         fetchSharedDashboards();
-
-        alert("dashboard shared");
+        setRecipientEmail("");
+        toast.success("dashboard shared successfully");
       }
     } catch (error) {
       console.error("error sharing dashboard");
@@ -322,6 +322,7 @@ const HomePage = () => {
           sharedDashboards={sharedDashboards}
           handleSharedUserClick={handleSharedUserClick}
           currentWorkspace={currentWorkspace}
+          setUserPermission={setUserPermission}
         />
         <div className={styles.theme}>
           <ThemeToggle />

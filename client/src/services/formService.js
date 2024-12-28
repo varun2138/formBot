@@ -32,6 +32,21 @@ const getForms = async () => {
   }
 };
 
+const getProtectedForm = async (formId) => {
+  try {
+    const response = await axios.get(
+      `${BACKEND_URL}/forms/protected/${formId}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message);
+    console.log(error);
+  }
+};
 const deleteForm = async (formId) => {
   try {
     const response = await axios.delete(`${BACKEND_URL}/forms/${formId}`, {
@@ -46,4 +61,19 @@ const deleteForm = async (formId) => {
   }
 };
 
-export { getForms, createForm, deleteForm };
+const addFieldsToForm = async (formId, fields) => {
+  try {
+    const response = await axios.put(
+      `${BACKEND_URL}/forms/form/${formId}/fields`,
+      { fields },
+      { withCredentials: true }
+    );
+    console.log("fields added successfully", response.data);
+    return response.data;
+  } catch (error) {
+    console.log("Error adding fields", error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+
+export { getForms, createForm, deleteForm, addFieldsToForm, getProtectedForm };
