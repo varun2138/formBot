@@ -141,6 +141,45 @@ const getForm = asyncHandler(async (req, res) => {
     form,
   });
 });
+const gePublicForm = asyncHandler(async (req, res) => {
+  const { formId } = req.params;
+  console.log("public form called");
+  const form = await Form.findByIdAndUpdate(
+    formId,
+    {
+      $inc: { viewCount: 1 },
+    },
+    {
+      new: true,
+    }
+  );
+  if (!form) {
+    throw new ApiError(404, "No form found");
+  }
+
+  res.status(200).json({
+    form,
+    viewCount: form.viewCount,
+  });
+});
+
+const incrementStartCount = asyncHandler(async (req, res) => {
+  const { formId } = req.params;
+  const form = await Form.findByIdAndUpdate(
+    formId,
+    { $inc: { startCount: 1 } },
+    {
+      new: true,
+    }
+  );
+  if (!form) {
+    throw new ApiError(404, "No form found");
+  }
+  res.status(200).json({
+    message: "start count updated",
+    startCount: form.startCount,
+  });
+});
 
 const deleteForm = asyncHandler(async (req, res) => {
   const { formId } = req.params;
@@ -192,4 +231,12 @@ const deleteForm = asyncHandler(async (req, res) => {
     message: "Form deleted successfully",
   });
 });
-export { createForm, addFields, getForms, getForm, deleteForm };
+export {
+  createForm,
+  addFields,
+  getForms,
+  getForm,
+  deleteForm,
+  gePublicForm,
+  incrementStartCount,
+};
