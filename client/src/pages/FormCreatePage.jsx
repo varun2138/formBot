@@ -8,15 +8,15 @@ import Sidebar from "../components/Sidebar";
 import FormPreview from "../components/FormPreview";
 import { addFieldsToForm, getProtectedForm } from "../services/formService";
 import { toast } from "react-hot-toast";
+import AnalyticsPage from "./AnalyticsPage";
 const FormCreatePage = () => {
   const { id } = useParams();
   const location = useLocation();
   const formName = location.state?.formName;
   const [link, setLink] = useState(null);
-
   const [formFields, setFormFields] = useState([]);
+  const [activeTab, setActiveTab] = useState("flow");
   const navigate = useNavigate();
-  console.log(formName);
 
   useEffect(() => {
     const fetchFields = async () => {
@@ -48,7 +48,6 @@ const FormCreatePage = () => {
     }
     setFormFields((prevFields) => [...prevFields, field]);
   };
-  console.log("formfields", formFields);
 
   const handleFieldDelete = (indextoDelete) => {
     setFormFields((prevFields) =>
@@ -92,8 +91,22 @@ const FormCreatePage = () => {
       <nav className={styles.navbar}>
         <p className={styles.formName}>{formName}</p>
         <div className={styles.buttons}>
-          <button className={styles.flow}>Flow</button>
-          <button className={styles.response}>Response</button>
+          <button
+            onClick={() => setActiveTab("flow")}
+            className={`${styles.flow} ${
+              activeTab === "flow" ? styles.active : ""
+            }`}
+          >
+            Flow
+          </button>
+          <button
+            onClick={() => setActiveTab("response")}
+            className={`${styles.response} ${
+              activeTab === "response" ? styles.active : ""
+            }`}
+          >
+            Response
+          </button>
         </div>
         <div className={styles.endButtons}>
           <ThemeToggle />
@@ -120,21 +133,27 @@ const FormCreatePage = () => {
         </div>
       </nav>
       <div className={styles.formCreation}>
-        <div className={styles.sidebar}>
-          <Sidebar onFieldAdd={handleFeildAdd} />
-        </div>
-        <div className={styles.mainPage}>
-          <div className={styles.fields}>
-            <div className={styles.start}>
-              {" "}
-              <GrFlagFill className={styles.flag} /> Start
+        {activeTab === "flow" ? (
+          <>
+            <div className={styles.sidebar}>
+              <Sidebar onFieldAdd={handleFeildAdd} />
             </div>
-            <FormPreview
-              initialFormFields={formFields}
-              onDelete={handleFieldDelete}
-            />
-          </div>
-        </div>
+            <div className={styles.mainPage}>
+              <div className={styles.fields}>
+                <div className={styles.start}>
+                  {" "}
+                  <GrFlagFill className={styles.flag} /> Start
+                </div>
+                <FormPreview
+                  initialFormFields={formFields}
+                  onDelete={handleFieldDelete}
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          <AnalyticsPage />
+        )}
       </div>
     </div>
   );

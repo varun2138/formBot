@@ -2,6 +2,10 @@ import mongoose, { mongo } from "mongoose";
 
 const responseSchema = new mongoose.Schema(
   {
+    responseId: {
+      type: String,
+      unique: true,
+    },
     formId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Form",
@@ -16,11 +20,15 @@ const responseSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.Mixed,
           required: true,
         },
+        timestamp: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
     submiitedAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
   },
   { timestamps: true }

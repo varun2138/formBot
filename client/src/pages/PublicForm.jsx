@@ -1,20 +1,3 @@
-// const handleInteraction = () => {
-//   if (!hasInteracted) {
-//     setHasInteracted(true);
-//     axios.post(`/api/public/forms/${formId}/start`);
-//   }
-// };
-
-// const [hasInteracted, setHasInteracted] = useState(false);
-
-// {
-/* <input
-  type={field.inputType}
-  placeholder={field.placeholder}
-  onFocus={handleInteraction}
-  onChange={(e) => handleInputChange(field._id, e.target.value)}
-/> */
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BACKEND_URL } from "../services/authService";
@@ -34,6 +17,16 @@ const PublicForm = () => {
   const [localValue, setLocalValue] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [responseId, setResponseId] = useState(null);
+
+  const generateResponseId = () => {
+    const newResponseId = new Date().getTime().toString();
+    setResponseId(newResponseId);
+  };
+
+  useEffect(() => {
+    generateResponseId();
+  }, []);
 
   const handleInteraction = async () => {
     if (!hasInteracted) {
@@ -45,9 +38,34 @@ const PublicForm = () => {
       console.log("Error incrementing start count:", error);
     }
   };
+
   useEffect(() => {
     fetchForm();
   }, [id]);
+
+  const submitPartialResponse = async (formId, fieldId, value) => {
+    if (!responseId) {
+      console.error("respnse id is missing");
+      return;
+    }
+    const responseData = {
+      formId,
+      fieldId,
+      value,
+      responseId,
+    };
+
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/responses/form/${formId}`,
+        responseData
+      );
+
+      console.log("partial response saved", response.data);
+    } catch (error) {
+      console.error("Error saving partial response", error);
+    }
+  };
 
   const fetchForm = async () => {
     try {
@@ -59,7 +77,10 @@ const PublicForm = () => {
   };
 
   const handleInputChange = (e) => {
+    const fieldId = e.target.name;
     setLocalValue(e.target.value);
+
+    // submitPartialResponse(id, fieldId, e.target.value);
   };
 
   const submitFormResponses = async () => {
@@ -87,6 +108,8 @@ const PublicForm = () => {
           [fieldId]: localValue,
         }));
 
+        submitPartialResponse(id, fieldId, localValue);
+
         if (!hasInteracted) {
           handleInteraction();
         }
@@ -100,6 +123,9 @@ const PublicForm = () => {
         ...prevResponses,
         [fieldId]: startDate.toLocaleDateString(),
       }));
+
+      submitPartialResponse(id, fieldId, startDate.toLocaleDateString());
+
       if (!hasInteracted) {
         handleInteraction();
       }
@@ -166,9 +192,9 @@ const PublicForm = () => {
               <div className={styles.inputContainer}>
                 <input
                   type={field.inputType}
+                  name={field._id}
                   placeholder={field.placeholder || "Enter your response"}
                   value={localValue}
-                  // onFocus={handleInteraction}
                   onChange={handleInputChange}
                 />
                 <button
@@ -194,7 +220,6 @@ const PublicForm = () => {
                 <DatePicker
                   placeholderText={field.placeholder || "Enter your date"}
                   selected={startDate}
-                  // onFocus={handleInteraction}
                   onChange={(date) => setStartDate(date)}
                 />
                 <button

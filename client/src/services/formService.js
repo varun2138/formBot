@@ -76,4 +76,20 @@ const addFieldsToForm = async (formId, fields) => {
   }
 };
 
-export { getForms, createForm, deleteForm, addFieldsToForm, getProtectedForm };
+const analytics = async (formId) => {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/responses/form/${formId}`);
+    return response.data;
+  } catch (error) {
+    console.log("Error getting responses", error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+export {
+  getForms,
+  createForm,
+  deleteForm,
+  addFieldsToForm,
+  getProtectedForm,
+  analytics,
+};
