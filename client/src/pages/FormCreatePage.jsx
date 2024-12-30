@@ -16,6 +16,7 @@ const FormCreatePage = () => {
   const [link, setLink] = useState(null);
   const [formFields, setFormFields] = useState([]);
   const [activeTab, setActiveTab] = useState("flow");
+  const [isSaved, setIsSaved] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,6 +66,7 @@ const FormCreatePage = () => {
 
       if (response?.form?.formLink) {
         setLink(response.form.formLink);
+        setIsSaved(true);
         toast.success("Form saved successfully");
       }
       console.log("form updated", response);
@@ -86,6 +88,7 @@ const FormCreatePage = () => {
     }
   };
 
+  console.log(formFields.length);
   return (
     <div className={styles.container}>
       <nav className={styles.navbar}>
@@ -111,9 +114,9 @@ const FormCreatePage = () => {
         <div className={styles.endButtons}>
           <ThemeToggle />
           <button
-            className={`${styles.share} ${!link ? styles.disable : ""}`}
+            className={`${styles.share} ${!isSaved ? styles.disable : ""}`}
             onClick={handleShareBtn}
-            disabled={!link}
+            disabled={!isSaved}
           >
             share
           </button>

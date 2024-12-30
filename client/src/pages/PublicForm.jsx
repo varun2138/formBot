@@ -7,6 +7,7 @@ import { IoSendSharp } from "react-icons/io5";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Rating from "../ui/Rating";
+import toast from "react-hot-toast";
 const PublicForm = () => {
   const { id } = useParams();
   const [form, setForm] = useState(null);
@@ -45,7 +46,7 @@ const PublicForm = () => {
 
   const submitPartialResponse = async (formId, fieldId, value) => {
     if (!responseId) {
-      console.error("respnse id is missing");
+      console.error("response id is missing");
       return;
     }
     const responseData = {
@@ -90,10 +91,10 @@ const PublicForm = () => {
         { responses }
       );
       console.log(response);
-      alert("form submitted");
+      toast.success("form submitted successfully");
     } catch (error) {
       console.error("Error submiting");
-      alert("eror submitting form");
+      toast.error("error submitting form");
     }
   };
   const handleSubmit = (fieldId, fieldInputType) => {
@@ -102,23 +103,36 @@ const PublicForm = () => {
       fieldInputType === "email" ||
       fieldInputType === "number"
     ) {
-      if (localValue.trim() !== "") {
-        setResponses((prevResponses) => ({
-          ...prevResponses,
-          [fieldId]: localValue,
-        }));
-
-        submitPartialResponse(id, fieldId, localValue);
-
-        if (!hasInteracted) {
-          handleInteraction();
-        }
-        setLocalValue("");
-        goToNextField();
-      } else {
-        alert("provide a response");
+      if (localValue.trim() === "") {
+        toast.error("please provide a response");
+        return;
       }
+
+      if (fieldInputType === "email" && !validateEmail(localValue)) {
+        toast.error("Please enter a valid email address");
+        return;
+      }
+      if (fieldInputType === "number" && !validatePhoneNumber(localValue)) {
+        toast.error("Please enter valid 10-digit mobile number");
+        return;
+      }
+      setResponses((prevResponses) => ({
+        ...prevResponses,
+        [fieldId]: localValue,
+      }));
+
+      submitPartialResponse(id, fieldId, localValue);
+
+      if (!hasInteracted) {
+        handleInteraction();
+      }
+      setLocalValue("");
+      goToNextField();
     } else if (fieldInputType === "date") {
+      if (!startDate) {
+        toast.error("Please select a date");
+        return;
+      }
       setResponses((prevResponses) => ({
         ...prevResponses,
         [fieldId]: startDate.toLocaleDateString(),
@@ -129,7 +143,7 @@ const PublicForm = () => {
       if (!hasInteracted) {
         handleInteraction();
       }
-      setStartDate("");
+      setStartDate(null);
       goToNextField();
     } else if (fieldInputType === "button") {
       setResponses((prevResponses) => ({
@@ -141,6 +155,16 @@ const PublicForm = () => {
     console.log(fieldId, fieldInputType);
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhoneNumber = (number) => {
+    const phoneRegex = /^\d{10}$/;
+    return phoneRegex.test(number);
+  };
+
   const goToNextField = () => {
     if (form && currentFieldIndex < form.fields.length - 1) {
       setCurrentFieldIndex((prevIndex) => {
@@ -148,7 +172,6 @@ const PublicForm = () => {
       });
     } else {
       console.log(responses);
-      alert("Form completed!");
     }
   };
 
@@ -196,6 +219,7 @@ const PublicForm = () => {
                   placeholder={field.placeholder || "Enter your response"}
                   value={localValue}
                   onChange={handleInputChange}
+                  required
                 />
                 <button
                   onClick={() => handleSubmit(field._id, field.inputType)}

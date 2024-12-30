@@ -1,5 +1,5 @@
 .container {
-  background: #18181b;
+  background: #131315;
   width: 100%;
   height: 100vh;
   overflow-y: auto;
@@ -37,6 +37,7 @@
   background: #18181b;
   padding: 0.3rem 1.4rem;
   border-radius: 0.25rem;
+  text-transform: capitalize;
 }
 
 .buttons {
@@ -49,6 +50,17 @@
 }
 .flow {
   background: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+}
+.flow.active,
+.response.active {
+  background: transparent;
   border: 1px solid #7ea6ff;
   padding: 0.5rem 1rem;
   color: white;
@@ -56,7 +68,9 @@
   border-radius: 0.5rem;
   text-align: center;
 }
-[data-theme="light"] .response {
+
+[data-theme="light"] .response,
+[data-theme="light"] .flow {
   color: black;
 }
 .response {
@@ -64,6 +78,7 @@
   background: none;
   font-weight: 600;
   color: whitesmoke;
+  cursor: pointer;
 }
 
 .endButtons {
@@ -132,6 +147,7 @@
   background: none;
   color: black;
   border: 1px solid #d6d6d6;
+  box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.1);
 }
 [data-theme="light"] .flag {
   color: #1a5fff;
