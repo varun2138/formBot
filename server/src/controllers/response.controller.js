@@ -42,15 +42,18 @@ const submitForm = asyncHandler(async (req, res) => {
 const partialResponses = asyncHandler(async (req, res) => {
   const { formId, fieldId, value, responseId } = req.body;
 
+  console.log(formId);
+  console.log(responseId);
+  console.log(fieldId);
+  console.log(value);
+
   if (!responseId || !formId || !fieldId || value === undefined) {
     throw new ApiError(400, "Error missing fields");
   }
 
   const existingResponse = await Response.findOne({ responseId, formId });
+  console.log(existingResponse);
 
-  if (!existingResponse) {
-    throw new ApiError(404, "response not found");
-  }
   if (existingResponse) {
     if (!existingResponse.responses) {
       existingResponse.responses = [];
@@ -78,6 +81,9 @@ const partialResponses = asyncHandler(async (req, res) => {
       ],
     });
 
+    if (!newResponse) {
+      console.error(error);
+    }
     await newResponse.save();
     return res
       .status(201)

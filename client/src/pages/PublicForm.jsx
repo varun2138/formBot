@@ -57,6 +57,7 @@ const PublicForm = () => {
       responseId,
     };
 
+    console.log(responseData);
     try {
       const response = await axios.post(
         `${BACKEND_URL}/responses/form/${formId}`,
