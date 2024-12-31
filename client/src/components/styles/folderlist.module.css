@@ -47,6 +47,13 @@
   gap: 0.5rem;
   cursor: pointer;
 }
+.foldername {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  display: inline-block;
+}
 .folder.active {
   background: white;
   color: black;

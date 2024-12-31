@@ -90,6 +90,9 @@
   font-size: 0.9rem;
 }
 
+[data-theme="light"] .noFields {
+  color: #0f0e0e;
+}
 .noFields {
   margin-top: 3rem;
   font-size: 2rem;

@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./styles/formList.module.css";
-import { FaPlus } from "react-icons/fa6";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { FaPlus, RiDeleteBin6Line } from "../utils/icons";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-hot-toast";
@@ -49,7 +48,7 @@ const FormList = ({
             className={styles.form}
             key={form._id}
           >
-            <p>{form.formName}</p>
+            <p className={styles.formname}>{form.formName}</p>
             {userPermission === "edit" && (
               <RiDeleteBin6Line
                 onClick={(e) => handleDeleteClick(e, form._id)}

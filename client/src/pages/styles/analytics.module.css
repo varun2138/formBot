@@ -52,6 +52,8 @@
   position: sticky;
   top: 0rem;
   z-index: 1;
+
+  text-transform: capitalize;
 }
 
 .table thead th {

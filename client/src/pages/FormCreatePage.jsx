@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import styles from "./styles/formcreate.module.css";
 import ThemeToggle from "../components/ThemeToggle";
-import { IoMdClose } from "react-icons/io";
-import { GrFlagFill } from "react-icons/gr";
+import { IoMdClose, GrFlagFill } from "../utils/icons";
 import Sidebar from "../components/Sidebar";
 import FormPreview from "../components/FormPreview";
 import { addFieldsToForm, getProtectedForm } from "../services/formService";
@@ -23,9 +22,6 @@ const FormCreatePage = () => {
     const fetchFields = async () => {
       try {
         const response = await getProtectedForm(id);
-        console.log(response);
-        console.log(response.form.fields);
-        console.log(response.form.formLink);
         if (response?.form?.fields) {
           setFormFields(response.form.fields);
           setLink(response.form.formLink);
@@ -38,8 +34,6 @@ const FormCreatePage = () => {
   }, [id]);
 
   const handleFeildAdd = (field) => {
-    console.log("Adding field:", field);
-
     if (
       field.type === "input" &&
       field.subtype === "button" &&
@@ -55,6 +49,7 @@ const FormCreatePage = () => {
       prevFields.filter((_, index) => index !== indextoDelete)
     );
   };
+
   const handleSave = async (fields) => {
     if (fields.length === 0 || fields[fields.length - 1].subtype !== "button") {
       toast.error("form must end with a submit button");
@@ -69,11 +64,11 @@ const FormCreatePage = () => {
         setIsSaved(true);
         toast.success("Form saved successfully");
       }
-      console.log("form updated", response);
     } catch (error) {
       console.error("Failed to save form", error);
     }
   };
+
   const handleShareBtn = () => {
     if (link) {
       navigator.clipboard
@@ -88,7 +83,6 @@ const FormCreatePage = () => {
     }
   };
 
-  console.log(formFields.length);
   return (
     <div className={styles.container}>
       <nav className={styles.navbar}>

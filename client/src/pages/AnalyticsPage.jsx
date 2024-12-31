@@ -47,12 +47,12 @@ const AnalyticsPage = () => {
     if (responses.length === 0) return null;
     const headers = [];
     let counters = {};
-    const fields = responses[0].responses.slice(0, -1);
+    const fields = responses[0].responses;
     fields.forEach((field) => {
       if (field.type === "input" && field.inputType) {
-        const key = `${field.inputType}${counters[field.inputType] || 1}`;
-        headers.push(key);
         counters[field.inputType] = (counters[field.inputType] || 0) + 1;
+        const key = `${field.inputType} ${counters[field.inputType] || 1}`;
+        headers.push(key);
       }
     });
 
@@ -72,13 +72,13 @@ const AnalyticsPage = () => {
       let counters = {};
 
       formattedData["Submitted At"] = formatDateTime(response.createdAt);
-      const fields = response.responses.slice(0, -1);
+      const fields = response.responses;
 
       fields.forEach((field) => {
         if (field.type === "input" && field.inputType) {
-          const key = `${field.inputType}${counters[field.inputType] || 1}`;
-          formattedData[key] = field.value || "";
           counters[field.inputType] = (counters[field.inputType] || 0) + 1;
+          const key = `${field.inputType}${counters[field.inputType]}`;
+          formattedData[key] = field.value || "";
         }
       });
 

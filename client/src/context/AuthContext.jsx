@@ -17,10 +17,12 @@ const AuthProvider = ({ children }) => {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
+
   const login = (userData) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
+
   const userUpdate = (userData) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));

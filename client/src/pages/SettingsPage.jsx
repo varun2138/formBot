@@ -1,16 +1,18 @@
 import { React, useState } from "react";
 import styles from "./styles/settings.module.css";
-import { LuUser } from "react-icons/lu";
-import { MdOutlineMail } from "react-icons/md";
-import { RiLockPasswordLine } from "react-icons/ri";
-import { IoEyeOutline } from "react-icons/io5";
-import { IoEyeOffOutline } from "react-icons/io5";
 import { updateUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-hot-toast";
-import { TbLogout } from "react-icons/tb";
-
+import {
+  LuUser,
+  MdOutlineMail,
+  RiLockPasswordLine,
+  IoEyeOffOutline,
+  IoEyeOutline,
+  TbLogout,
+} from "../utils/icons";
 import useLogout from "../utils/logout";
+
 const SettingsPage = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);

@@ -2,10 +2,7 @@ import { React, useState } from "react";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
 import styles from "./styles/formpage.module.css";
-import image1 from "../assets/ellipse1.png";
-import image2 from "../assets/ellipse2.png";
-import image3 from "../assets/polygon.png";
-import { FaArrowLeftLong } from "react-icons/fa6";
+import { image1, image2, image3, FaArrowLeftLong } from "../utils/icons";
 import { useNavigate } from "react-router-dom";
 const FormPage = () => {
   const [formType, setFormType] = useState(false);

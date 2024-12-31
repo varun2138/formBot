@@ -1,8 +1,7 @@
 import React from "react";
 import styles from "./styles/folderlist.module.css";
 
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { MdOutlineCreateNewFolder } from "react-icons/md";
+import { RiDeleteBin6Line, MdOutlineCreateNewFolder } from "../utils/icons";
 
 const FolderList = ({
   selectedSharedFolders,
@@ -15,6 +14,7 @@ const FolderList = ({
 }) => {
   const folderItems =
     selectedSharedFolders.length > 0 ? selectedSharedFolders : folders;
+
   return (
     <div className={styles.folders}>
       {userPermission === "edit" && (
@@ -35,7 +35,7 @@ const FolderList = ({
               handleFolderClick(folder);
             }}
           >
-            <p>{folder.folderName}</p>
+            <p className={styles.foldername}>{folder.folderName}</p>
             {userPermission === "edit" && (
               <RiDeleteBin6Line
                 onClick={(e) => {

@@ -2,6 +2,7 @@ import Form from "../models/form.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
 import Response from "../models/responses.model.js";
+import mongoose from "mongoose";
 
 const submitForm = asyncHandler(async (req, res) => {
   const { formId } = req.params;
@@ -13,16 +14,22 @@ const submitForm = asyncHandler(async (req, res) => {
   }
 
   const formattedResponses = Object.keys(responses).map((fieldId) => ({
-    fieldId,
+    fieldId: mongoose.Types.ObjectId.isValid(fieldId) ? fieldId : null,
     value: responses[fieldId],
   }));
 
+  formattedResponses.push({
+    fieldId: new mongoose.Types.ObjectId(),
+    value: "form submit",
+  });
+
   const newResponse = await Response.create({
     formId,
-    responses: formattedResponses,
+    responses: formattedResponses.filter((res) => res.fieldId),
     submittedAt: new Date(),
   });
 
+  console.log(newResponse);
   form.submitCount += 1;
   await form.save();
   res.status(200).json({
@@ -32,53 +39,51 @@ const submitForm = asyncHandler(async (req, res) => {
   });
 });
 
-const partialResponses = async (req, res) => {
+const partialResponses = asyncHandler(async (req, res) => {
   const { formId, fieldId, value, responseId } = req.body;
 
   if (!responseId || !formId || !fieldId || value === undefined) {
-    return res.status(400).json({ message: "Missing required fields" });
+    throw new ApiError(400, "Error missing fields");
   }
 
-  try {
-    const existingResponse = await Response.findOne({ responseId, formId });
+  const existingResponse = await Response.findOne({ responseId, formId });
 
-    if (existingResponse) {
-      if (!existingResponse.responses) {
-        existingResponse.responses = [];
-      }
-
-      const newResponseField = {
-        fieldId,
-        value,
-      };
-      existingResponse.responses.push(newResponseField);
-
-      await existingResponse.save();
-      return res
-        .status(200)
-        .json({ message: "Partial response updated", data: existingResponse });
-    } else {
-      const newResponse = new Response({
-        responseId,
-        formId,
-        responses: [
-          {
-            fieldId,
-            value,
-          },
-        ],
-      });
-
-      await newResponse.save();
-      return res
-        .status(201)
-        .json({ message: "Partial response saved", data: newResponse });
+  if (!existingResponse) {
+    throw new ApiError(404, "response not found");
+  }
+  if (existingResponse) {
+    if (!existingResponse.responses) {
+      existingResponse.responses = [];
     }
-  } catch (error) {
-    console.error("Error saving partial response", error);
-    return res.status(500).json({ message: "Internal server error" });
+
+    const newResponseField = {
+      fieldId,
+      value,
+    };
+    existingResponse.responses.push(newResponseField);
+
+    await existingResponse.save();
+    return res
+      .status(200)
+      .json({ message: "Partial response updated", data: existingResponse });
+  } else {
+    const newResponse = new Response({
+      responseId,
+      formId,
+      responses: [
+        {
+          fieldId,
+          value,
+        },
+      ],
+    });
+
+    await newResponse.save();
+    return res
+      .status(201)
+      .json({ message: "Partial response saved", data: newResponse });
   }
-};
+});
 
 const getResponsesById = asyncHandler(async (req, res) => {
   const { formId } = req.params;
@@ -97,6 +102,10 @@ const getResponsesById = asyncHandler(async (req, res) => {
   }
 
   const enrichedResponses = responses.map((response) => {
+    const isSubmitted = response.responses.some(
+      (res) => res.value === "form submit"
+    );
+
     const enriched = form.fields.map((field) => {
       const existingResponseField = response.responses.find(
         (res) => res.fieldId.toString() === field._id.toString()
@@ -104,18 +113,23 @@ const getResponsesById = asyncHandler(async (req, res) => {
 
       return {
         fieldId: field._id,
-        value: existingResponseField?.value || "",
+        value: existingResponseField
+          ? existingResponseField.value
+          : isSubmitted && field.inputType === "button"
+          ? "form submit"
+          : "",
         type: field.type || null,
         inputType: field.inputType || null,
         placeholder: field.placeholder || null,
       };
     });
-
+    console.log(enriched);
     return {
       _id: response._id,
       formId: response.formId,
       responses: enriched,
       createdAt: response.createdAt,
+      isSubmitted,
     };
   });
 

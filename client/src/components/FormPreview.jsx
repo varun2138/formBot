@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./styles/formpreview.module.css";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { CiImageOn } from "react-icons/ci";
-import { LuMessageSquareText } from "react-icons/lu";
+import {
+  CiImageOn,
+  RiDeleteBin6Line,
+  LuMessageSquareText,
+} from "../utils/icons";
 
 const FormPreview = ({ initialFormFields = [], onDelete }) => {
   const [formFields, setFormFields] = useState(initialFormFields);
@@ -87,7 +89,7 @@ const FormPreview = ({ initialFormFields = [], onDelete }) => {
                       </div>
                       <div className={styles.delete}>
                         {" "}
-                        <RiDeleteBin5Line
+                        <RiDeleteBin6Line
                           onClick={() => onDelete(index)}
                         />{" "}
                       </div>
@@ -116,7 +118,7 @@ const FormPreview = ({ initialFormFields = [], onDelete }) => {
                       </div>
 
                       <div className={styles.delete}>
-                        <RiDeleteBin5Line onClick={() => onDelete(index)} />{" "}
+                        <RiDeleteBin6Line onClick={() => onDelete(index)} />{" "}
                       </div>
                     </div>
                   )}
@@ -139,7 +141,7 @@ const FormPreview = ({ initialFormFields = [], onDelete }) => {
                     {getHintMessage(field.subtype) || field.placeholder}
                   </p>
                   <div className={styles.delete}>
-                    <RiDeleteBin5Line onClick={() => onDelete(index)} />{" "}
+                    <RiDeleteBin6Line onClick={() => onDelete(index)} />{" "}
                   </div>
                 </div>
               );

@@ -3,11 +3,12 @@ import { useParams } from "react-router-dom";
 import { BACKEND_URL } from "../services/authService";
 import axios from "axios";
 import styles from "./styles/publicform.module.css";
-import { IoSendSharp } from "react-icons/io5";
+import { IoSendSharp } from "../utils/icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Rating from "../ui/Rating";
 import toast from "react-hot-toast";
+import { validateEmail, validatePhoneNumber } from "../utils/validation";
 const PublicForm = () => {
   const { id } = useParams();
   const [form, setForm] = useState(null);
@@ -78,10 +79,7 @@ const PublicForm = () => {
   };
 
   const handleInputChange = (e) => {
-    const fieldId = e.target.name;
     setLocalValue(e.target.value);
-
-    // submitPartialResponse(id, fieldId, e.target.value);
   };
 
   const submitFormResponses = async () => {
@@ -97,7 +95,7 @@ const PublicForm = () => {
       toast.error("error submitting form");
     }
   };
-  const handleSubmit = (fieldId, fieldInputType) => {
+  const handleSubmit = async (fieldId, fieldInputType) => {
     if (
       fieldInputType === "text" ||
       fieldInputType === "email" ||
@@ -145,24 +143,7 @@ const PublicForm = () => {
       }
       setStartDate(null);
       goToNextField();
-    } else if (fieldInputType === "button") {
-      setResponses((prevResponses) => ({
-        ...prevResponses,
-        [fieldId]: "submit form",
-      }));
-      goToNextField();
     }
-    console.log(fieldId, fieldInputType);
-  };
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePhoneNumber = (number) => {
-    const phoneRegex = /^\d{10}$/;
-    return phoneRegex.test(number);
   };
 
   const goToNextField = () => {
@@ -294,8 +275,7 @@ const PublicForm = () => {
       return (
         <div key={field._id} className={styles.buttonField}>
           <button
-            onClick={() => {
-              handleSubmit(field._id, field.inputType);
+            onClick={async () => {
               submitFormResponses();
             }}
           >
@@ -325,7 +305,7 @@ const PublicForm = () => {
         setIsInputVisible(true);
       }
     }
-  }, [form, currentFieldIndex, displayedFields]);
+  }, [form, currentFieldIndex]);
 
   return (
     <div className={styles.formContainer}>

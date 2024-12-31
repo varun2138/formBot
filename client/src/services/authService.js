@@ -12,6 +12,9 @@ const register = async (userData) => {
         withCredentials: true,
       }
     );
+    if (response.data) {
+      toast.success("user registered successfully");
+    }
     return response.data;
   } catch (error) {
     console.log("Registration error", error);
@@ -25,6 +28,9 @@ const login = async (userData) => {
     const response = await axios.post(`${BACKEND_URL}/users/login`, userData, {
       withCredentials: true,
     });
+    if (response.data) {
+      toast.success("user logged In successfully");
+    }
     return response.data;
   } catch (error) {
     console.log("login error", error);

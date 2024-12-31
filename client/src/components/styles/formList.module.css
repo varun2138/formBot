@@ -51,7 +51,13 @@
   position: relative;
   font-family: "Open sans";
 }
-
+.formname {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  display: inline-block;
+}
 .delete {
   position: absolute;
   top: -0.8rem;

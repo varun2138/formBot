@@ -7,7 +7,6 @@ import { loginValidationSchema } from "../utils/validationSchemas";
 import { useAuth } from "../context/AuthContext";
 import { login } from "../services/authService";
 import { useNavigate } from "react-router-dom";
-import {} from "react-icons";
 
 const Login = ({ toggleForm }) => {
   const { login: setUser } = useAuth();
@@ -32,6 +31,7 @@ const Login = ({ toggleForm }) => {
       setErrors({});
 
       const response = await login(formData);
+
       navigate("/dashboard");
       if (response.user) {
         setUser(response.user);
@@ -75,7 +75,6 @@ const Login = ({ toggleForm }) => {
       <p className={styles.text}>or</p>
 
       <button className={styles.GoogleBtn}>
-        {/* logo */}
         <FcGoogle className={styles.icon} />
         Sign In with Google
       </button>

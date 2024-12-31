@@ -19,45 +19,58 @@ import ThemeToggle from "../components/ThemeToggle";
 import FormList from "../components/FormList";
 import { createForm, deleteForm, getForms } from "../services/formService";
 import toast from "react-hot-toast";
+import Modal from "../ui/Modal";
 
 const HomePage = () => {
-  // console.log("home page");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // folder states
   const [folders, setFolders] = useState([]);
-  const [forms, setForms] = useState([]);
-  const [sharedDashboards, setSharedDashboards] = useState([]);
   const [selectedSharedFolders, setSelectedSharedFolders] = useState([]);
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [folderName, setFolderName] = useState("");
+  const [folderOpen, setFolderOpen] = useState(false);
+  const [foldertoDelete, setFolderToDelete] = useState(null);
+  const [activeFolderId, setActiveFolderId] = useState(null);
+
+  // form states
+  const [forms, setForms] = useState([]);
+  const [selectedFolderForms, setSelectedFolderForms] = useState([]);
+  const [selectedSharedForms, setSelectedSharedForms] = useState([]);
+  const [formToDelete, setFormToDelete] = useState(null);
+  const [deleteFormModal, setDeleteFormModal] = useState(false);
+  const [formName, setFormName] = useState("");
+  const [formOpen, setformOpen] = useState(false);
+
+  // modal
+  const [isOpen, setIsOpen] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+
+  // dashboard
+  const [sharedDashboards, setSharedDashboards] = useState([]);
+  const [isProcessingToken, setIsProcessingToken] = useState(false);
   const [recipientEmail, setRecipientEmail] = useState("");
   const [permissions, setPermissions] = useState("view");
   const [shareLink, setShareLink] = useState("");
-  const [isProcessingToken, setIsProcessingToken] = useState(false);
+
+  // workspace
   const { user, theme } = useAuth();
   const [currentWorkspace, setCurrentWorkspace] = useState(user?.username);
-  const [isOpen, setIsOpen] = useState(false);
-  const [folderOpen, setFolderOpen] = useState(false);
-  const [folderName, setFolderName] = useState("");
   const [userPermission, setUserPermission] = useState("edit");
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [foldertoDelete, setFolderToDelete] = useState(null);
-  const [selectedFolder, setSelectedFolder] = useState(null);
-  const [selectedFolderForms, setSelectedFolderForms] = useState([]);
-  const [selectedSharedForms, setSelectedSharedForms] = useState([]);
-  const [formName, setFormName] = useState("");
 
-  const [activeFolderId, setActiveFolderId] = useState(null);
-  const [deleteFormModal, setDeleteFormModal] = useState(false);
-  const [formToDelete, setFormToDelete] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
+
   const openFolder = () => setFolderOpen(true);
   const closeFolder = () => setFolderOpen(false);
-  const [formOpen, setformOpen] = useState(false);
+
   const openForm = () => setformOpen(true);
   const closeForm = () => setformOpen(false);
 
+  // dropdown toggle
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
     if (!isDropdownOpen) {
@@ -70,14 +83,15 @@ const HomePage = () => {
     }
   };
 
+  // useEffect for token retrieval
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const tokenFromURL = queryParams.get("token");
     const token = tokenFromURL || sessionStorage.getItem("dashboardToken");
-    // console.log("token in useEffect", token);
+
     if (token && !isProcessingToken) {
       setIsProcessingToken(true);
-      // console.log("token if present", token);
+
       sessionStorage.setItem("dashboardToken", token);
       handleTokenAcceptance(token);
     } else if (!isProcessingToken) {
@@ -87,6 +101,7 @@ const HomePage = () => {
     }
   }, [location, isProcessingToken]);
 
+  // token acceptance logic
   const handleTokenAcceptance = async (token) => {
     setIsProcessingToken(true);
     try {
@@ -101,26 +116,29 @@ const HomePage = () => {
     }
   };
 
+  // retrieving shared dashboards with the user
   const fetchSharedDashboards = async () => {
     try {
       const response = await getSharedDashboard();
-      // console.log("Shared Dashboards Response:", response);
+
       setSharedDashboards(response?.sharedData?.sharedUsers);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // retrieving user folders
   const handleFolders = async () => {
     try {
       const data = await getFolders();
-      // console.log("folders:", data);
+
       setFolders(data?.folders);
     } catch (error) {
       console.error("Error fetching folders:", error);
     }
   };
 
+  // retrieving user forms
   const handleForms = async () => {
     try {
       const data = await getForms();
@@ -130,6 +148,8 @@ const HomePage = () => {
       console.error("error while fetching forms", error);
     }
   };
+
+  // displaying the shared workspaces data
   const handleSharedUserClick = (sharedId) => {
     if (sharedId === user?.id) {
       setSelectedSharedFolders([]);
@@ -142,7 +162,7 @@ const HomePage = () => {
       );
 
       setSelectedSharedFolders(selectedUser?.folders || []);
-      setSelectedSharedForms(selectedUser?.forms);
+      setSelectedSharedForms(selectedUser?.forms || []);
       setCurrentWorkspace(selectedUser?.name);
       setUserPermission(selectedUser?.permissions);
     }
@@ -156,6 +176,7 @@ const HomePage = () => {
     }
   }, [currentWorkspace, userPermission]);
 
+  // sharing the dashboard with other users
   const handleSharedDashboard = async () => {
     try {
       const response = await shareDashboard({
@@ -177,6 +198,7 @@ const HomePage = () => {
     }
   };
 
+  // folder creation logic
   const handleCreateFolder = async (e) => {
     e.preventDefault();
     if (userPermission !== "edit") return;
@@ -200,6 +222,7 @@ const HomePage = () => {
     }
   };
 
+  // form creation logic
   const handleCreateForm = async (e) => {
     e.preventDefault();
     if (userPermission !== "edit") return;
@@ -232,6 +255,8 @@ const HomePage = () => {
       console.error("Error creating form", error);
     }
   };
+
+  // folder deletion logic
   const handleDeleteFolder = async () => {
     if (userPermission !== "edit" || !foldertoDelete) return;
     try {
@@ -250,6 +275,7 @@ const HomePage = () => {
     }
   };
 
+  // form deletion logic
   const handleDeleteForm = async (formId) => {
     console.log("deelee folder is called");
     if (userPermission !== "edit" || !formId) return;
@@ -344,105 +370,51 @@ const HomePage = () => {
 
       <div className={styles.folders}>
         {folderOpen && (
-          <div className={styles.folderModal}>
-            <div className={styles.openFolder}>
-              <p>Create New Folder</p>
-              <input
-                type="text"
-                className={styles.folderName}
-                value={folderName}
-                onChange={(e) => setFolderName(e.target.value)}
-                placeholder="Enter folder name"
-              />
-              <div className={styles.buttons}>
-                <button
-                  onClick={handleCreateFolder}
-                  className={styles.createBtn}
-                >
-                  Done
-                </button>
-                <p>|</p>
-                <button onClick={closeFolder} className={styles.cancel}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
+          <Modal
+            title="Create New Folder"
+            inputValue={folderName}
+            onInputChange={(e) => setFolderName(e.target.value)}
+            placeholder="Enter folder name"
+            onConfirm={handleCreateFolder}
+            onCancel={closeFolder}
+            isInputVisible={true}
+            text="Done"
+          />
         )}
 
         {formOpen && (
-          <div className={styles.folderModal}>
-            <div className={styles.openFolder}>
-              <p>Create New Form</p>
-              <input
-                type="text"
-                className={styles.folderName}
-                value={formName}
-                onChange={(e) => setFormName(e.target.value)}
-                placeholder="Enter form name"
-              />
-              <div className={styles.buttons}>
-                <button onClick={handleCreateForm} className={styles.createBtn}>
-                  Done
-                </button>
-                <p>|</p>
-                <button onClick={closeForm} className={styles.cancel}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
+          <Modal
+            title="Create New Form"
+            inputValue={formName}
+            onInputChange={(e) => setFormName(e.target.value)}
+            placeholder="Enter form name"
+            onConfirm={handleCreateForm}
+            onCancel={closeForm}
+            isInputVisible={true}
+            text="Done"
+          />
         )}
         {deleteModal && (
-          <div className={styles.folderModal}>
-            <div className={styles.openFolder}>
-              <p className={styles.heading}>
-                Are you sure you want to delete this folder?
-              </p>
-
-              <div className={styles.buttons}>
-                <button
-                  onClick={handleDeleteFolder}
-                  className={styles.createBtn}
-                >
-                  Confirm
-                </button>
-                <p>|</p>
-                <button onClick={closeDeleteFolder} className={styles.cancel}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
+          <Modal
+            title="Are you sure you want to delete this folder?"
+            onConfirm={handleDeleteFolder}
+            onCancel={closeDeleteFolder}
+            text="Confirm"
+            isInputVisible={false}
+          />
         )}
 
         {deleteFormModal && (
-          <div className={styles.folderModal}>
-            <div className={styles.openFolder}>
-              <p className={styles.heading}>
-                Are you sure you want to delete this form?
-              </p>
-
-              <div className={styles.buttons}>
-                <button
-                  onClick={() => {
-                    handleDeleteForm(formToDelete);
-                    closeDeleteFormModal();
-                  }}
-                  className={styles.createBtn}
-                >
-                  Confirm
-                </button>
-                <p>|</p>
-                <button
-                  onClick={closeDeleteFormModal}
-                  className={styles.cancel}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
+          <Modal
+            title="Are you sure you want to delete this form?"
+            onConfirm={() => {
+              handleDeleteForm(formToDelete);
+              closeDeleteFormModal();
+            }}
+            onCancel={closeDeleteFormModal}
+            text="Confirm"
+            isInputVisible={false}
+          />
         )}
         <FolderList
           folders={folders}

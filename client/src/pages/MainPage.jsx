@@ -1,11 +1,14 @@
 import React from "react";
 import styles from "./styles/mainpage.module.css";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/Container.png";
-import { RiExternalLinkLine } from "react-icons/ri";
-import image from "../assets/image.png";
-import triangle from "../assets/triangle.png";
-import curve from "../assets/curve.png";
+import {
+  RiExternalLinkLine,
+  curve,
+  triangle,
+  logo,
+  image,
+} from "../utils/icons";
+import sections from "../utils/data";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -59,49 +62,18 @@ const MainPage = () => {
             Made with ❤️ by <span className={styles.item}>@cuvette</span>
           </p>
         </div>
-        <div className={styles.section}>
-          <h2>Product</h2>
-          <div className={styles.items}>
-            <p className={styles.item}>
-              Status <RiExternalLinkLine />
-            </p>
-            <p className={styles.item}>
-              Documentation <RiExternalLinkLine />
-            </p>
-            <p className={styles.item}>
-              Roadmap <RiExternalLinkLine />
-            </p>
-            <p className={styles.item}>Pricing</p>
+        {Object.entries(sections).map(([sectionName, items]) => (
+          <div className={styles.section} key={sectionName}>
+            <h2>{sectionName}</h2>
+            <div className={styles.items}>
+              {items.map((item, index) => (
+                <p className={styles.item} key={index}>
+                  {item.name} {item.external && <RiExternalLinkLine />}
+                </p>
+              ))}{" "}
+            </div>
           </div>
-        </div>
-        <div className={styles.section}>
-          <h2>Community</h2>
-          <div className={styles.items}>
-            <p className={styles.item}>
-              Discord <RiExternalLinkLine />
-            </p>
-            <p className={styles.item}>
-              GitHub repository <RiExternalLinkLine />
-            </p>
-            <p className={styles.item}>
-              Twitter <RiExternalLinkLine />
-            </p>
-            <p className={styles.item}>
-              Linkedin <RiExternalLinkLine />
-            </p>
-            <p className={styles.item}>OSS Friends </p>
-          </div>
-        </div>
-        <div className={styles.section}>
-          <h2>Company</h2>
-          <div className={styles.items}>
-            <p className={styles.item}>About </p>
-            <p className={styles.item}>Contact </p>
-
-            <p className={styles.item}>Terms of Service </p>
-            <p className={styles.item}>Privacy Policy </p>
-          </div>
-        </div>
+        ))}
       </footer>
     </div>
   );

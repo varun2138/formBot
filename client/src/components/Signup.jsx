@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import styles from "./styles/login.module.css";
 import { FcGoogle } from "react-icons/fc";
 import { SignupValidationSchema } from "../utils/validationSchemas";
