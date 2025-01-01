@@ -256,7 +256,7 @@ const HomePage = () => {
           (form) => form.formName.toLowerCase() === formName.toLowerCase()
         )) ||
       selectedSharedForms.some(
-        (form) => form.toLowerCase() === formName.toLowerCase()
+        (form) => form.formName.toLowerCase() === formName.toLowerCase()
       );
 
     if (isDuplicate) {
