@@ -206,8 +206,20 @@ const HomePage = () => {
     const dashboardId = sharedDashboards.find(
       (dashboard) => dashboard.name === currentWorkspace
     )?.id;
-    console.log(dashboardId);
 
+    const isDuplicate =
+      folders.some(
+        (folder) => folder.folderName.toLowerCase() === folderName.toLowerCase()
+      ) ||
+      selectedSharedFolders.some(
+        (folder) => folder.folderName.toLowerCase() === folderName.toLowerCase()
+      );
+    if (isDuplicate) {
+      toast.error(
+        "A folder with the same name already exists in the workspace"
+      );
+      return;
+    }
     try {
       const response = await createFolder({ dashboardId, folderName });
       setFolders([...folders, response.folder]);
@@ -230,6 +242,27 @@ const HomePage = () => {
       (dashboard) => dashboard.name === currentWorkspace
     )?.id;
 
+    const isDuplicate =
+      forms.some(
+        (form) => form.formName.toLowerCase() === formName.toLowerCase()
+      ) ||
+      forms.some(
+        (form) =>
+          form.formName.toLowerCase() === formName.toLowerCase() &&
+          form.parentFolder === selectedFolder?._id
+      ) ||
+      (selectedFolderForms &&
+        selectedFolderForms.some(
+          (form) => form.formName.toLowerCase() === formName.toLowerCase()
+        )) ||
+      selectedSharedForms.some(
+        (form) => form.toLowerCase() === formName.toLowerCase()
+      );
+
+    if (isDuplicate) {
+      toast.error("A form with the same name already exists in the workspace");
+      return;
+    }
     try {
       const response = await createForm({
         dashboardId,

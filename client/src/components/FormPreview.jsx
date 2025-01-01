@@ -6,13 +6,22 @@ import {
   LuMessageSquareText,
 } from "../utils/icons";
 
-const FormPreview = ({ initialFormFields = [], onDelete }) => {
+const FormPreview = ({ initialFormFields = [], onDelete, errors = [] }) => {
   const [formFields, setFormFields] = useState(initialFormFields);
   const [focusedIndex, setFocusedIndex] = useState(null);
+
   useEffect(() => {
     setFormFields(initialFormFields);
   }, [initialFormFields]);
 
+  useEffect(() => {
+    const errorIndex = errors.findIndex((error) => error);
+    if (errorIndex !== -1) {
+      setFocusedIndex(errorIndex);
+    }
+  }, [errors]);
+
+  // handler function for bubble inputs
   const handleFieldChange = (index, newValue, fieldType) => {
     const updatedFormFields = [...formFields];
     if (fieldType === "bubble" && updatedFormFields[index].subtype === "text") {
@@ -26,6 +35,7 @@ const FormPreview = ({ initialFormFields = [], onDelete }) => {
     setFormFields(updatedFormFields);
   };
 
+  // getting the count for fields for multiple entries
   const getCounts = () => {
     const counts = {};
     return formFields.map((field, index) => {
@@ -62,6 +72,7 @@ const FormPreview = ({ initialFormFields = [], onDelete }) => {
         <div className={styles.noFields}>No fields added yet</div>
       ) : (
         fieldsWithCounts.map((field, index) => {
+          const hasErrors = errors[index];
           switch (field.type) {
             case "bubble":
               return (
@@ -86,6 +97,14 @@ const FormPreview = ({ initialFormFields = [], onDelete }) => {
                           onFocus={() => setFocusedIndex(index)}
                           onBlur={() => setFocusedIndex(null)}
                         />
+                      </div>
+
+                      <div>
+                        {hasErrors && (
+                          <span className={styles.errorText}>
+                            field is required
+                          </span>
+                        )}
                       </div>
                       <div className={styles.delete}>
                         {" "}
@@ -116,7 +135,11 @@ const FormPreview = ({ initialFormFields = [], onDelete }) => {
                           onBlur={() => setFocusedIndex(null)}
                         />
                       </div>
-
+                      {hasErrors && (
+                        <span className={styles.errorText}>
+                          field is required
+                        </span>
+                      )}
                       <div className={styles.delete}>
                         <RiDeleteBin6Line onClick={() => onDelete(index)} />{" "}
                       </div>

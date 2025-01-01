@@ -16,6 +16,7 @@ const FormCreatePage = () => {
   const [formFields, setFormFields] = useState([]);
   const [activeTab, setActiveTab] = useState("flow");
   const [isSaved, setIsSaved] = useState(false);
+  const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,20 +43,37 @@ const FormCreatePage = () => {
       return;
     }
     setFormFields((prevFields) => [...prevFields, field]);
+    setErrors((prevErrors) => [...prevErrors, false]);
   };
 
   const handleFieldDelete = (indextoDelete) => {
     setFormFields((prevFields) =>
       prevFields.filter((_, index) => index !== indextoDelete)
     );
+    setErrors((prevErrors) =>
+      prevErrors.filter((_, index) => index !== indextoDelete)
+    );
   };
 
-  const handleSave = async (fields) => {
-    if (fields.length === 0 || fields[fields.length - 1].subtype !== "button") {
-      toast.error("form must end with a submit button");
+  const handleValidationAndSave = async (fields) => {
+    const updatedErrors = fields.map((field) => {
+      if (field.type === "bubble") {
+        const isTextRequired = field.subtype === "text" && !field.text?.trim();
+        const isImageRequired =
+          field.subtype === "image" && !field.image?.trim();
+        return isTextRequired || isImageRequired;
+      }
+      return false;
+    });
+    setErrors(updatedErrors);
+    if (updatedErrors.some((error) => error)) {
+      toast.error("please fill all the required fields before saving.");
       return;
     }
-
+    if (fields.length === 0 || fields[fields.length - 1].subtype !== "button") {
+      toast.error("Form must end with a submit button.");
+      return;
+    }
     try {
       const response = await addFieldsToForm(id, fields);
 
@@ -115,7 +133,7 @@ const FormCreatePage = () => {
             share
           </button>
           <button
-            onClick={() => handleSave(formFields)}
+            onClick={() => handleValidationAndSave(formFields)}
             className={styles.save}
           >
             save
@@ -144,6 +162,7 @@ const FormCreatePage = () => {
                 <FormPreview
                   initialFormFields={formFields}
                   onDelete={handleFieldDelete}
+                  errors={errors}
                 />
               </div>
             </div>

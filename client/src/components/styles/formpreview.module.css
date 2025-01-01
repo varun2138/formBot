@@ -57,6 +57,7 @@
   color: white;
   width: 100%;
 }
+
 .icon {
   color: #1a5fff;
 
@@ -98,4 +99,10 @@
   font-size: 2rem;
   color: white;
   font-family: "Open sans";
+}
+.errorText {
+  color: red;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 1px;
 }
