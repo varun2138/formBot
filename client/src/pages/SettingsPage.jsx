@@ -37,6 +37,19 @@ const SettingsPage = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !formData.username &&
+      !formData.email &&
+      !formData.password &&
+      !formData.newPassword
+    ) {
+      toast.error("Add atleast one field to update");
+      return;
+    }
+    if (formData.password && !formData.newPassword) {
+      toast.error("Please enter a new password to change your password");
+      return;
+    }
     try {
       const response = await updateUser(formData);
       console.log(response.user);
@@ -45,7 +58,9 @@ const SettingsPage = () => {
         setUser(response.user);
         localStorage.setItem("user", JSON.stringify(response.user));
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error while updating user", error);
+    }
     setFormData({
       username: "",
       email: "",
